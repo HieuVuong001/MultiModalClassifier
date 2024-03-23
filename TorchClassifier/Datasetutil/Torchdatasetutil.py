@@ -214,6 +214,7 @@ def loadimagefoldertrainonlydataset(name, path, split=['train']):
     dataset_sizes = {'train': len(train_idx), 'val': len(
         valid_idx)}
 
+    print(f"Number of batches from train is {len(dataloaders['train'])}")
     return dataloaders, dataset_sizes, class_names, imageshape
 
 
@@ -271,6 +272,8 @@ def loadimagefolderdataset(name, path, split=['train', 'val']):
         datapath, x), mydata_transforms[x]) for x in split}
     dataloaders = {x: torch.utils.data.DataLoader(
         image_datasets[x],        batch_size=BATCH_SIZE, shuffle=True, num_workers=num_workers) for x in split}
+    print(dataloaders)
+    print(BATCH_SIZE)
     dataset_sizes = {x: len(image_datasets[x]) for x in split}
     class_names = image_datasets[split[0]].classes  # 'train'
 

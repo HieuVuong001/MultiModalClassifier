@@ -113,6 +113,8 @@ def create_vggmodel1(numclasses, img_shape):
     last_layer = nn.Linear(n_inputs, numclasses)
 
     vgg16.classifier[6] = last_layer
+
+    return vgg16
     
 class VGG(nn.Module):
     def __init__(self, features, output_dim):
@@ -188,6 +190,8 @@ def create_vggcustommodel(numclasses, img_shape):
     for parameter in model.classifier[:-1].parameters():
         parameter.requires_grad = False
 
+    return model
+
 def get_vgg_layers(config, batch_norm):
 
     #Batch normalization: BN is a layer with learnable parameters - two per filter denoted  γ  and  β
@@ -247,7 +251,6 @@ class CNNNet1(nn.Module): #32*32 image input
         x = self.pool(F.relu(self.conv1(x))) # output size: 32*32*16, pool=16*16*16
         x = self.pool(F.relu(self.conv2(x))) # output 16*16*16, pool=8*8*16
         x = self.pool(F.relu(self.conv3(x))) # 8*8*64, pool=4*4*64
-
         # flatten image input
         x = x.view(-1, 64 * 4 * 4)
         # add dropout layer
@@ -258,6 +261,7 @@ class CNNNet1(nn.Module): #32*32 image input
         x = self.dropout(x)
         # add 2nd hidden layer, with relu activation function
         x = self.fc2(x) # 500 -> 10
+        print('Forward completed')
         return x
 
 def create_cnnmodel1(numclasses, img_shape):
@@ -502,7 +506,7 @@ def create_torchvisionmodel(modulename, numclasses, freezeparameters=True, pretr
         lastlayer=lastmoduleinlist[-1]
         if isinstance(lastlayer, nn.Linear):
             print('Linear layer')
-            newclassifier = nn.Linear(in_features=lastlayer.in_features, out_features=classnum)
+            newclassifier = nn.Linear(in_features=lastlayer.in_features, out_features=numclasses)
         elif isinstance(lastlayer, nn.Sequential):
             print('Sequential layer')
             lastlayerlist=list(lastlayer) #[-1] #last layer

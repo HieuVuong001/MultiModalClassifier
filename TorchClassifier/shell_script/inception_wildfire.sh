@@ -1,0 +1,1 @@
+sudo ../../env/bin/python3 myTorchTrainer.py --data_name 'wildfire' --data_type 'trainvalfolder' --data_path './' --model_name 'inception_v3' --learningratename 'StepLR' --optimizer 'Adam' --batchsize 64 --img_height 300 --img_width 300

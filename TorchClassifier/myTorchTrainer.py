@@ -123,7 +123,7 @@ parser.add_argument('--ddp', default=False, type=bool,
 #                     help='use TPU')
 # parser.add_argument('--MIXED_PRECISION', type=bool, default=False,
 #                     help='use MIXED_PRECISION')
-parser.add_argument('--TAG', default='0910',
+parser.add_argument('--TAG', default='01',
                     help='setup the experimental TAG to differentiate different running results')
 parser.add_argument('--reproducible', type=bool, default=False,
                     help='get reproducible results we can set the random seed for Python, Numpy and PyTorch')
@@ -196,7 +196,6 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
                         outputs, _ = outputs
                     # convert output probabilities to predicted class
                     _, preds = torch.max(outputs, 1)#outputs size [32, 10]
-
                     # calculate the batch loss
                     loss = criterion(outputs, labels)
 
@@ -211,7 +210,7 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
                 running_loss += loss.item() * inputs.size(0)#batch size
                 running_corrects += torch.sum(preds == labels.data)
                 # measure accuracy and record loss
-                acc1, acc5 = accuracy(outputs, labels, topk=(1, 5))
+                acc1, acc5 = accuracy(outputs, labels, topk=(1, 3))
                 losses.update(loss.item(), inputs.size(0))
                 top1.update(acc1[0], inputs.size(0))
                 top5.update(acc5[0], inputs.size(0))
@@ -389,6 +388,7 @@ def main():
         print("No GPU and TPU enabled")
     
     #Load dataset
+    print(args.data_path)
     dataloaders, dataset_sizes, class_names, img_shape = loadTorchdataset(args.data_name,args.data_type, args.data_path, args.img_height, args.img_width, args.batchsize)
     #Visualize dataset
     test_loader=dataloaders['train']
@@ -402,7 +402,10 @@ def main():
 
     numclasses =len(class_names)
     model_ft = createTorchCNNmodel(args.model_name, numclasses, img_shape, args.pretrained)
-
+    
+    # set aux to false
+    # model_ft.aux_logits=False
+    
         # add_graph() will trace the sample input through your model,
     # and render it as a graph.
     # tensorboard_writer.add_graph(model_ft, images)
