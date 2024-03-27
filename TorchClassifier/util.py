@@ -2,30 +2,39 @@ import os
 import shutil
 import pandas as pd
 from Datasetutil.Torchdatasetutil import *
-# path = './wildfire/train'
+import random
 
-# df = pd.read_csv(f'{path}/_classes.csv')
-
-# burned_images = df[df[' burned'] == 1]
-# fire_and_smoke_images = df[df[' fireandsmoke'] == 1]
-# normal = df[df[' normal'] == 1]
-
-# images = [burned_images, fire_and_smoke_images, normal]
-
-# print(len(burned_images), len(fire_and_smoke_images), len(normal))
-# folder_name = ['burned', 'fireandsmoke', 'normal']
-# try:
-#     for fname in folder_name:
-#         os.mkdir(f'{path}/{fname}')
-# except OSError as error:
-#     print(error)
-# for i, folder in enumerate(folder_name):
-#     for filename in images[i].iloc[:, 0]:
-#         src = f'{path}/{filename}'
-#         dst = f'{path}/{folder}'
-#         shutil.copy(src, dst)
+base_path = './pokemon/train'
 
 
-dataloaders, dataset_sizes, class_names, imageshape = loadimagefolderdataset(name='wildfire', path='./')
+folder_name = ['Normal', 'Fire', 'Electric', 'Grass', 'Water', 'Fighting']
 
-print(dataset_sizes)
+
+# 20% testing 80% training
+for name in folder_name:
+    directory = f'{base_path}/{name}'
+    num_img = len(os.listdir(directory))
+    all_files = os.listdir(directory)
+    
+    random.shuffle(all_files)
+
+    # set out 20% of files for training
+    test_length = int(0.2 * num_img)
+
+    test_files = all_files[:test_length]
+    train_files = all_files[test_length:]
+
+    # move all test_file to a separate directory
+
+    try:
+        os.makedirs(f'./pokemon/val/{name}')
+    except OSError as error:
+        # acknoleged that folder already created
+        print(error)
+
+    for filename in test_files:
+        src = f'./pokemon/train/{name}/{filename}'
+        dst = f'./pokemon/val/{name}/{filename}'
+        print(f'From : {src}')
+        print(f'To : {dst}')
+        shutil.move(src, dst)

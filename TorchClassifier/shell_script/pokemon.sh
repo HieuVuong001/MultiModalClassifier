@@ -1,0 +1,1 @@
+sudo ../../env/bin/python3 myTorchTrainer.py --data_name 'pokemon' --data_type 'trainonly' --data_path './' --model_name 'wide_resnet101_2' --learningratename 'StepLR' --optimizer 'Adam' --batchsize 128 --img_height 150 --img_width 150
